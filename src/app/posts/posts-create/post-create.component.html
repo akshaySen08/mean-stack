@@ -1,9 +1,13 @@
 <mat-card>
-    <mat-form-field>
-        <input matInput type="text" [(ngModel)]="postTitle">
-    </mat-form-field>
-    <mat-form-field>
-        <textarea rows="6" matInput [(ngModel)]="postContent"></textarea>
-    </mat-form-field>
-    <button mat-raised-button class="btn btn-primary" (click)="onAddPost()">Submit</button>
+    <form (submit)="onAddPost(createPost)" #createPost="ngForm">
+        <mat-form-field>
+            <input matInput type="text" name="postTitle" placeholder="Post title" ngModel required #title>
+            <mat-error *ngIf="title">Please enter a post title</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea rows="6" matInput name="postContent" placeholder="Post content" ngModel required #content></textarea>
+            <mat-error *ngIf="content">Please enter a post content</mat-error>
+        </mat-form-field>
+        <button mat-raised-button class="btn btn-primary" type="submit">Submit</button>
+    </form>
 </mat-card>
