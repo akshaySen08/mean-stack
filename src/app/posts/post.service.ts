@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 
 @Injectable()
 export class PostService {
@@ -34,6 +35,11 @@ export class PostService {
     return this.postUpdated.asObservable();
   }
 
+  // for editing a post getting a post by id
+  getPost(id: string) {
+    return this.http.get<{id: string, title: string, content: string}>(`http://localhost:3000/api/posts/${id}`);
+  }
+
   addNewPost(title: string, content: string) {
     const post: Post = { id: null, title: title, content: content };
     this.http
@@ -43,6 +49,17 @@ export class PostService {
         this.posts.push(post);
         this.postUpdated.next([...this.posts]);
       });
+  }
+
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = {
+      id: id, title: title, content: content
+    };
+    this.http.put(`http://localhost:3000/api/posts/${id}`, post).subscribe(
+      (res) => {
+        console.log(res);
+      }
+    );
   }
 
   deletePost(postId: string) {
