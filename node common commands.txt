@@ -1,0 +1,9 @@
+Install express : npm install --save express;
+
+Install nodemon : npm install --save nodemon;
+
+To start nodemon : npm run start:server,
+
+Install mongoose : npm install --save mongoose
+
+TO install body parser for post request: npm install --save body parser (for parsing post incoming data)
