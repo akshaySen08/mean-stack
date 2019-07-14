@@ -4,13 +4,14 @@ import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class PostService {
   private posts: Post[] = [];
   private postUpdated = new Subject<Post[]>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   getPosts() {
     this.http
@@ -37,7 +38,7 @@ export class PostService {
 
   // for editing a post getting a post by id
   getPost(id: string) {
-    return this.http.get<{id: string, title: string, content: string}>(`http://localhost:3000/api/posts/${id}`);
+    return this.http.get<{ id: string, title: string, content: string }>(`http://localhost:3000/api/posts/${id}`);
   }
 
   addNewPost(title: string, content: string) {
@@ -48,6 +49,7 @@ export class PostService {
         post.id = id;
         this.posts.push(post);
         this.postUpdated.next([...this.posts]);
+        this.router.navigate(['/']); // for backward page
       });
   }
 
@@ -57,7 +59,12 @@ export class PostService {
     };
     this.http.put(`http://localhost:3000/api/posts/${id}`, post).subscribe(
       (res) => {
-        console.log(res);
+        const updatedPosts = [...this.posts];
+        const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
+        updatedPosts[oldPostIndex] = post;
+        this.posts = updatedPosts;
+        this.postUpdated.next([...this.posts]);
+        this.router.navigate(['/']); // for backward page
       }
     );
   }

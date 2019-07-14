@@ -11,24 +11,28 @@ import { Subscription } from 'rxjs';
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   private postSub: Subscription;
-  constructor(public postService: PostService) {}
+  isLoading = false;
+
+  constructor(public postService: PostService) { }
 
   ngOnInit(): void {
     this.postService.getPosts();
+    this.isLoading = true;
     this.postSub = this.postService
       .getPostUpdateListner()
       .subscribe((res: Post[]) => {
+        this.isLoading = false;
         this.posts = res;
       });
   }
 
-  onDelete(postId: string){
+  onDelete(postId: string) {
     this.postService.deletePost(postId);
   }
 
   ngOnDestroy(): void {
-      // Called once, before the instance is destroyed.
-      // Add 'implements OnDestroy' to the class.
-      this.postSub.unsubscribe();
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    this.postSub.unsubscribe();
   }
 }
